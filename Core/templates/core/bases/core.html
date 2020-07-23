@@ -1,0 +1,32 @@
+{% load static %}
+{% load core_tags %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>{% get_nome_cliente %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <link rel="stylesheet" href="{% static 'assets/css/bootstrap.css' %}" media="screen">
+    <link rel="stylesheet" href="{% static 'assets/css/custom.min.css' %}">
+    {% block extratopjs %}{% endblock %}
+    {% block extracss %}{% endblock %}
+    <style>
+        {% block css %}{% endblock %}
+    </style>
+</head>
+
+<body>
+    {% block body %}{% endblock %}
+
+    <script type="text/javascript" src="{% static 'assets/js/jquery.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'assets/js/popper.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'assets/js/bootstrap.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'assets/js/custom.js' %}"></script>
+
+    {% block extrabottomjs %}{% endblock %}
+
+    <script type="text/javascript">
+        {% block script %}{% endblock %}
+    </script>
+</body>

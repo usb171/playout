@@ -1,0 +1,175 @@
+{% extends 'core/estrutura.html' %}
+{% load static %}
+
+{% block extracss %}
+  <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+{% endblock %}
+
+{% block extrabottomjs %}
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+{% endblock %}
+
+{% block css %}
+
+    table {
+        border-spacing: collapse;
+        border-spacing: 0;
+    }
+
+    td {
+        width: 50px;
+        height: 25px;
+        border: 1px solid black;
+    }
+
+    .ui-sortable-helper {
+        color: white;
+        display: table-row;
+        vertical-align: inherit;
+        border-color: inherit;
+    }
+
+    .table tbody tr.highlight td {
+      background-color: #424371;
+    }
+
+{% endblock %}
+
+{% block script %}
+
+    $('.table').on('click', 'tbody tr', function(event) {
+        let id = $(this).attr('data-id-midia');
+        let $stop = $("#stop");
+        let $pause_resume = $("#pause_resume");
+        let $play = $("#play");
+
+        $stop.attr('data-id-midia', id);
+        $pause_resume.attr('data-id-midia', id);
+        $play.attr('data-id-midia', id);
+
+        $(this).addClass('highlight').siblings().removeClass('highlight');
+        resetar_painal_controle();
+
+
+    });
+
+    let resetar_painal_controle = () => {
+        let $stop = $(".stop");
+        let $pause_resume = $(".pause-resume");
+        let $play = $(".play");
+        $stop.removeClass('active').removeClass('focus');
+        $pause_resume.removeClass('active').removeClass('focus');
+        $play.removeClass('active').removeClass('focus');
+    };
+
+    let reconectar = () => {
+        console.log('Reconectando...');
+        $.ajax({
+            url: "core_reconectar_ajax",
+            dataType: 'json'
+        });
+    }
+
+    let stop_ajax = () => {
+        $.ajax({
+            url: "core_stop_ajax",
+            dataType: 'json'
+        });
+    };
+
+    let pause_resume_ajax = (id_midia) => {
+        console.log('Pause/Resume Mídia: ' + id_midia);
+        $.ajax({
+            url: "core_pause_resume_ajax?id_midia=" + id_midia,
+            dataType: 'json',
+            success: function (data) {
+                console.log(data);
+            }
+        });
+    };
+
+    let play_ajax = (id_midia) => {
+        console.log('Play Mídia: ' + id_midia);
+        $.ajax({
+            url: "core_play_ajax?id_midia=" + id_midia,
+            dataType: 'json',
+            success: function (data) {
+                console.log(data);
+            }
+        });
+    };
+
+
+
+    $( function() {
+
+        let atualizar_ordem_payout = (id, ordem) => {
+            $.ajax({
+                url: "atualizar_ordem_payout_ajax?id=" + id + "&ordem=" + ordem,
+                dataType: 'json',
+                success: function (data) {
+                    console.log(data);
+                }
+            });
+        };
+
+        $(".sortable").sortable({
+           start: function( event, ui ) {
+                let linha = ui.item;
+           },
+           stop: function( event, ui ) {
+                let ordem = 0;
+                $(".sortable").children().each(function(){
+                    let id = $(this).attr('id');
+                    ordem = ordem + 1;
+                    atualizar_ordem_payout(id, ordem);
+                });
+           }
+        });
+
+        $.ajax({
+                url: "carregar_tabela_playout_ajax?id_playout=1",
+                dataType: 'json',
+                success: function (data) {
+                    $(".sortable").html(data.linhas);
+                }
+        });
+    });
+
+
+   setInterval(function(){
+       reconectar();
+   }, 5000);
+
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="jumbotron">
+
+        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+            <label class="btn btn-secondary stop">
+                <input type="radio" name="options" id="stop" autocomplete="off" checked onclick="stop_ajax()" data-id-midia=""> STOP
+            </label>
+            <label class="btn btn-secondary pause-resume">
+                <input type="radio" name="options" id="pause_resume" autocomplete="off" onclick="pause_resume_ajax($(this).attr('data-id-midia'))" data-id-midia=""> P/R
+            </label>
+            <label class="btn btn-secondary play">
+                <input type="radio" name="options" id="play" autocomplete="off" onclick="play_ajax($(this).attr('data-id-midia'))" data-id-midia=""> PLAY
+            </label>
+        </div>
+
+        <hr class="my-1">
+        <table class="table table-striped table-dark table-bordered">
+            <thead class="thead-dark">
+                <tr>
+                  <th scope="col">Mídia</th>
+                  <th scope="col">Duração</th>
+                </tr>
+              </thead>
+            <tbody class="sortable">
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
