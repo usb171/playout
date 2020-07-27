@@ -88,10 +88,10 @@
         });
     };
 
-    let play_ajax = (id_midia) => {
+    let play_ajax = (id_midia, id_playout=2) => {
         console.log('Play Mídia: ' + id_midia);
         $.ajax({
-            url: "core_play_ajax?id_midia=" + id_midia,
+            url: "core_play_ajax?id_midia=" + id_midia + "&id_playout=" + id_playout,
             dataType: 'json',
             success: function (data) {
                 console.log(data);
@@ -128,10 +128,11 @@
         });
 
         $.ajax({
-                url: "carregar_tabela_playout_ajax?id_playout=1",
+                url: "carregar_tabela_playout_ajax?id_playout=2",
                 dataType: 'json',
                 success: function (data) {
                     $(".sortable").html(data.linhas);
+                    $("tr[data-id-midia='" + data.id_midia_atual + "']").click();
                 }
         });
     });
@@ -146,17 +147,18 @@
 {% block content %}
 <div class="container">
     <div class="jumbotron">
-
-        <div class="btn-group btn-group-toggle" data-toggle="buttons">
-            <label class="btn btn-secondary stop">
-                <input type="radio" name="options" id="stop" autocomplete="off" checked onclick="stop_ajax()" data-id-midia=""> STOP
-            </label>
-            <label class="btn btn-secondary pause-resume">
-                <input type="radio" name="options" id="pause_resume" autocomplete="off" onclick="pause_resume_ajax($(this).attr('data-id-midia'))" data-id-midia=""> P/R
-            </label>
-            <label class="btn btn-secondary play">
-                <input type="radio" name="options" id="play" autocomplete="off" onclick="play_ajax($(this).attr('data-id-midia'))" data-id-midia=""> PLAY
-            </label>
+        <div class="row">
+            <div class="btn-group btn-group-toggle col-md-6" data-toggle="buttons">
+                <label class="btn btn-secondary stop">
+                    <input type="radio" name="options" id="stop" autocomplete="off" checked onclick="stop_ajax()" data-id-midia=""> STOP
+                </label>
+                <label class="btn btn-secondary pause-resume">
+                    <input type="radio" name="options" id="pause_resume" autocomplete="off" onclick="pause_resume_ajax($(this).attr('data-id-midia'))" data-id-midia=""> P/R
+                </label>
+                <label class="btn btn-secondary play">
+                    <input type="radio" name="options" id="play" autocomplete="off" onclick="play_ajax($(this).attr('data-id-midia'))" data-id-midia=""> PLAY
+                </label>
+            </div>
         </div>
 
         <hr class="my-1">
@@ -170,6 +172,7 @@
             <tbody class="sortable">
             </tbody>
         </table>
+
     </div>
 </div>
 {% endblock %}

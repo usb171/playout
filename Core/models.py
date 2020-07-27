@@ -3,7 +3,7 @@ from django.db import models
 class Playout(models.Model):
     ativo = models.BooleanField(default=True)
     titulo = models.CharField(max_length=250, verbose_name='Título', blank=False, null=True)
-    midia_atual = models.ForeignKey('Midia', verbose_name="Mídia Atual", on_delete=models.CASCADE, blank=False, null=True)
+    midia_atual = models.ForeignKey('Midia', verbose_name="Mídia Atual", on_delete=models.CASCADE, blank=False, null=True, editable=False)
     created_at = models.DateTimeField('Criado em', auto_now_add=True, null=True)
     update_at = models.DateTimeField('Atualizado em', auto_now=True, null=True)
 

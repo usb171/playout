@@ -12,4 +12,5 @@ urlpatterns = [
 
     path('carregar_tabela_playout_ajax', CoreAjax.carregar_tabela_playout, name='carregar_tabela_playout_ajax'),
     path('atualizar_ordem_payout_ajax', CoreAjax.atualizar_ordem_payout, name='atualizar_ordem_payout_ajax'),
+    path('listar_arquivos_servidor_ajax', CoreAjax.listar_arquivos_servidor, name='listar_arquivos_servidor_ajax'),
 ]
